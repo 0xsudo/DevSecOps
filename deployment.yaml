@@ -25,14 +25,13 @@ kind: Service
 metadata:
   labels:
     app: asgbuggy
-    k8s-app: asgbuggy
   name: asgbuggy
 spec:
+  type: LoadBalancer
+  selector:
+    app: asgbuggy
   ports:
   - name: http
     port: 80
     protocol: TCP
     targetPort: 8080
-  type: LoadBalancer
-  selector:
-    app: asgbuggy
