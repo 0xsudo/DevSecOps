@@ -6,7 +6,7 @@ pipeline {
 	stages {
 		stage('Compile and run Sonar Analysis') {
 			steps {
-				sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io -Dsdonar.login=buggy-app'
+				sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io -Dsdonar.login=702d0cfb7d0b5d908be8d20cda97284323b879ea'
 			}
 		}
 		// stage('Synk SCA Analysis') {
