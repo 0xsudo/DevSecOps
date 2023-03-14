@@ -6,7 +6,7 @@ pipeline {
 	stages {
 		stage('Compile and run Sonar Analysis') {
 			steps {
-				sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=DevSecOps -Dsonar.organization=Kaoka Kelvin -Dsonar.host.url=https://sonarcloud.io -Dsdonar.login=6dbf93d137851b4f44d1a41a54cc71f56576b737'
+				sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=DevSecOps -Dsonar.organization="Kaoka Kelvin" -Dsonar.host.url=https://sonarcloud.io -Dsdonar.login=6dbf93d137851b4f44d1a41a54cc71f56576b737'
 			}
 		}
 		// stage('Synk SCA Analysis') {
