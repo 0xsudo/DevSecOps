@@ -30,18 +30,22 @@ pipeline {
 		}
 		stage('Create ECR Repo') {
 			steps {
-				sh 'aws ecr delete-repository --repository-name buggy-app'
-				sh 'aws ecr create-repository --repository-name buggy-app'
-				sh 'aws ecr describe-repositories --repository-name buggy-app'
-			}
-		}
-		stage('Docker Push') {
-			steps {
-				docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-					docker_image.push('latest')
+				withCredentials([credentialsId: 'devopsrole']) {
+					script {
+						sh 'aws ecr delete-repository --repository-name buggy-app'
+						sh 'aws ecr create-repository --repository-name buggy-app'
+						sh 'aws ecr describe-repositories --repository-name buggy-app'
+					}
 				}
 			}
 		}
+		// stage('Docker Push') {
+		// 	steps {
+		// 		docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com/', 'ecr:us-east-1:devopsrole') {
+		// 			docker_image.push('latest')
+		// 		}
+		// 	}
+		// }
 		// stage('Synk SCA Analysis') {
 		// 	steps {
 		// 		withCredentials([string(credentialsId: 'SYNK_TOKEN', variable: 'SYNK_TOKEN')]) {
