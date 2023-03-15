@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker build and push') {
 			steps {
 				script {
-					sh '/build_push_image.sh'
+					sh './build_push_image.sh'
 				}
 			}
 		}
