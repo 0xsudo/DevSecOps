@@ -30,13 +30,13 @@ pipeline {
 		}
 		stage('Create ECR Repo') {
 			steps {
-				withCredentials([credentialsId: 'devopsrole']) {
-					script {
-						sh 'aws ecr delete-repository --repository-name buggy-app'
-						sh 'aws ecr create-repository --repository-name buggy-app'
-						sh 'aws ecr describe-repositories --repository-name buggy-app'
-					}
+				// withCredentials([credentialsId: 'devopsrole']) {
+				script {
+					sh 'aws ecr delete-repository --repository-name buggy-app'
+					sh 'aws ecr create-repository --repository-name buggy-app'
+					sh 'aws ecr describe-repositories --repository-name buggy-app'
 				}
+				// }
 			}
 		}
 		// stage('Docker Push') {
