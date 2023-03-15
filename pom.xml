@@ -41,13 +41,6 @@
 			<properties>
 				<jvm.args.perm.size>-XX:MaxMetaspaceSize=128m</jvm.args.perm.size>
 				<jvm.args.gc.log.path>-Xlog:gc*:logs/gc_%p_%t.log:time,level,tags:filecount=5,filesize=10M</jvm.args.gc.log.path>
-				<!-- TODO Remove these properties -->
-				<jvm.args.print.heap.at.gc>-Dummy=Dummy</jvm.args.print.heap.at.gc>
-				<jvm.args.print.gc.details>-Dummy=Dummy</jvm.args.print.gc.details>
-				<jvm.args.print.gc.date.stamps>-Dummy=Dummy</jvm.args.print.gc.date.stamps>
-				<jvm.args.gc.log.file.rotation>-Dummy=Dummy</jvm.args.gc.log.file.rotation>
-				<jvm.args.number.of.gc.log.files>-Dummy=Dummy</jvm.args.number.of.gc.log.files>
-				<jvm.args.gc.log.file.size>-Dummy=Dummy</jvm.args.gc.log.file.size>
 			</properties>
 		</profile>
 	</profiles>
@@ -303,7 +296,7 @@
 				</executions>
 			</plugin>
 			<!--# Changes for Software Composition Analysis Scan using Snyk
-#By ASecurityGuru
+#By kaoka kelvin
 -->
     <plugin>
       <groupId>io.snyk</groupId>
@@ -311,7 +304,7 @@
       <version>2.0.0</version>
       <inherited>false</inherited>
       <configuration>
-        <org>asecurityguru</org>
+        <org>0xsudo</org>
       </configuration>
     </plugin>
 <!-- Snyk Changes for SCA Ends Here -->
