@@ -30,14 +30,11 @@ pipeline {
 		}
 		stage('Docker Push') {
 			steps {
-				docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+				script {
+					docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 					docker_image.push('latest')
 				}
 			}
-		}
-		post {
-			always {
-				sh 'docker logout'
 			}
 		}
 		// stage('Synk SCA Analysis') {
@@ -86,5 +83,10 @@ pipeline {
 		// 		}
 		// 	}
 		// }
+	}
+	post {
+		always {
+			sh 'docker logout'
+		}
 	}
 }
