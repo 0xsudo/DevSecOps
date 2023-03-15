@@ -26,7 +26,9 @@ pipeline {
 		// }
 		stage('Open file Test') {
 			steps {
-				sh './testfile.sh'
+				script {
+					sh './testfile.sh'
+				}
 			}
 		}
 		stage('Docker Build') {
