@@ -19,13 +19,26 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Docker build and push') {
+		stage('Docker Build') {
 			steps {
-				script {
-					// sh '${PWD}'
-					sh 'chown -R $USER: /${PWD}/'
-					sh 'ls -al ${PWD}'
-					sh '/${PWD}/build_push_image.sh'
+				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+					script {
+						docker_image=docker.build('buggy-app')
+					}
+				}
+			}
+		}
+		stage('Create ECR Repo') {
+			steps {
+				sh 'aws ecr delete-repository --repository-name buggy-app'
+				sh 'aws ecr create-repository --repository-name buggy-app'
+				sh 'aws ecr describe-repositories --repository-name buggy-app'
+			}
+		}
+		stage('Docker Push') {
+			steps {
+				docker.withRegistry(['https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole']) {
+					docker_image.push('latest')
 				}
 			}
 		}
