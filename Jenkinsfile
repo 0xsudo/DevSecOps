@@ -6,7 +6,7 @@ pipeline {
 	stages {
 		stage('Compile and Run Sonar Analysis') {
 			steps {
-				withCredentials([credentialsId: 'SONAR_TOKEN']) {
+				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN']) {
 					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=702d0cfb7d0b5d908be8d20cda97284323b879ea
 
 				}
@@ -14,7 +14,7 @@ pipeline {
 		}
 		stage('SCA Synk Analysis') {
 			steps {
-				withCredentials([credentialsId: 'SNYK_TOKEN']) {
+				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN']) {
 					sh 'mvn synk:test -fn'
 				}
 			}
