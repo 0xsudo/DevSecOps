@@ -12,10 +12,10 @@ pipeline {
 				}
 			}
 		}
-		stage('SCA Synk Analysis') {
+		stage('SCA Snyk Analysis') {
 			steps {
 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-					sh 'mvn synk:test -fn'
+					sh 'mvn snyk:test -fn'
 				}
 			}
 		}
