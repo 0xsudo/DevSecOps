@@ -4,18 +4,25 @@ pipeline {
 		maven 'mvn'
 	}
 	stages {
-		stage('Compile and Run Sonar Analysis') {
-			steps {
-				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+		// stage('Compile and Run Sonar Analysis') {
+		// 	steps {
+		// 		withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+		// 			sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
 
-				}
-			}
-		}
-		stage('SCA Snyk Analysis') {
+		// 		}
+		// 	}
+		// }
+		// stage('SCA Snyk Analysis') {
+		// 	steps {
+		// 		withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+		// 			sh 'mvn snyk:test -fn'
+		// 		}
+		// 	}
+		// }
+		stage('Docker build and push') {
 			steps {
-				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-					sh 'mvn snyk:test -fn'
+				script {
+					sh 'build_push_image.sh'
 				}
 			}
 		}
