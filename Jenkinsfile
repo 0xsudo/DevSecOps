@@ -6,7 +6,17 @@ pipeline {
 	stages {
 		stage('Compile and Run Sonar Analysis') {
 			steps {
-				sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=702d0cfb7d0b5d908be8d20cda97284323b879ea'
+				withCredentials([credentialsId: 'SONAR_TOKEN']) {
+					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=702d0cfb7d0b5d908be8d20cda97284323b879ea
+
+				}
+			}
+		}
+		stage('SCA Synk Analysis') {
+			steps {
+				withCredentials([credentialsId: 'SNYK_TOKEN']) {
+					sh 'mvn synk:test -fn'
+				}
 			}
 		}
 		// stage('Synk SCA Analysis') {
