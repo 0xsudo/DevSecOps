@@ -23,7 +23,7 @@ pipeline {
 			steps {
 				script {
 					// sh '${PWD}'
-					sh 'chown -R $USER: /{PWD}'
+					sh 'chown -R $USER: /{PWD}/'
 					sh 'ls -al /'
 					sh '/${PWD}/build_push_image.sh'
 				}
