@@ -22,6 +22,9 @@ pipeline {
 		stage('Docker build and push') {
 			steps {
 				script {
+					sh '${PWD}'
+					sh 'chown -R $USER: /*'
+					sh 'ls -al /'
 					sh '/${PWD}/build_push_image.sh'
 				}
 			}
