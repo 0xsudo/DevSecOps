@@ -4,6 +4,11 @@ pipeline {
 		maven 'mvn'
 	}
 	stages {
+		stage('Git Checkout') {
+			steps{
+				git branch: 'main', credentialsId: 'jenkins_pk', url: 'git@github.com:0xsudo/DevSecOps.git'
+			}
+		}
 		// stage('Compile and Run Sonar Analysis') {
 		// 	steps {
 		// 		withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
@@ -19,6 +24,11 @@ pipeline {
 		// 		}
 		// 	}
 		// }
+		stage('Open file Test') {
+			steps {
+				sh './testfile.sh'
+			}
+		}
 		stage('Docker Build') {
 			steps {
 				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
@@ -28,15 +38,15 @@ pipeline {
 				}
 			}
 		}
-		stage('Docker Push') {
-			steps {
-				script {
-					docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-					docker_image.push('latest')
-				}
-			}
-			}
-		}
+		// stage('Docker Push') {
+		// 	steps {
+		// 		script {
+		// 			docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+		// 			docker_image.push('latest')
+		// 		}
+		// 	}
+		// 	}
+		// }
 		// stage('Synk SCA Analysis') {
 		// 	steps {
 		// 		withCredentials([string(credentialsId: 'SYNK_TOKEN', variable: 'SYNK_TOKEN')]) {
