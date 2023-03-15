@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker build and push') {
 			steps {
 				script {
-					sh 'cd'
+					sh 'ls -al'
 					sh 'build_push_image.sh'
 				}
 			}
