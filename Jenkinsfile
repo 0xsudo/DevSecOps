@@ -24,13 +24,6 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Open file Test') {
-			steps {
-				script {
-					sh './testfile.sh'
-				}
-			}
-		}
 		stage('Docker Build') {
 			steps {
 				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
