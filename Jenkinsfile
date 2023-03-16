@@ -74,7 +74,7 @@ pipeline {
 			steps {
 				script {
 					if (params.eksctl_action == 'create') {
-						sh 'eksctl create cluster --name devsecops_buggyapp --region us-east-1 --nodegroup-name linux_buggy_app --nodes 2 --instance-types t2.nano --spot --tag "app=buggy-app" --version 1.25'
+						sh 'eksctl create cluster --name devsecops_buggyapp --region us-east-1 --nodegroup-name linux_buggy_app --nodes 2 --instance-types t2.nano --spot --tags "app=buggy-app" --version 1.25'
 					} else {
 						sh 'eksctl delete cluster --name devsecops_buggyapp --region us-east-1'
 					}
