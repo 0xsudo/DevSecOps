@@ -33,13 +33,20 @@ pipeline {
 				}
 			}
 		}
+		stage('Create ECR Registry') {
+			steps {
+				script {
+					sh 'aws ecr delete-repository --repository-name asg-buggy'
+					sh 'aws ecr create-repository --repository-name asg-buggy'
+				}
+			}
+		}
 		// stage('Docker Push') {
 		// 	steps {
 		// 		script {
 		// 			docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 		// 			docker_image.push('latest')
 		// 		}
-		// 	}
 		// 	}
 		// }
 		// stage('Synk SCA Analysis') {
