@@ -36,7 +36,7 @@ pipeline {
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					if (aws ecr delete-repository --repository-name asg-buggy) > /dev/null 2>$1 {
+					if (sh'aws ecr delete-repository --repository-name asg-buggy') > /dev/null 2>$1 {
 						sh 'aws ecr create-repository --repository-name asg-buggy'
 					}
 				}
