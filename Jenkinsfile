@@ -52,7 +52,7 @@ pipeline {
 					if (params.ecr_action == "create") {
 						sh 'aws ecr create-repository --repository-name asg-buggy'
 					} else {
-						sh'aws ecr delete-repository --repository-name ${params.our_app}'
+						sh'aws ecr delete-repository --repository-name asg-buggy'
 					}
 				}
 			}
