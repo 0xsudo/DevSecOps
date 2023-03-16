@@ -70,20 +70,20 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create EKS Cluster') {
-		// 	steps {
-		// 		script {
-		// 			if (params.eksctl_action == 'create') {
-		// 				sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
-		// 			} else {
-		// 				sh 'aws cloudformation delete-stack --stack-name eksctl-devsecops-buggy-app-cluster --region us-east-1'
-		// 				// deleting the cluster directly created a race condition btwn node groups and cluster, decided to delete the cloudformation template instead
-		// 				// sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
-		// 				// sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Create EKS Cluster') {
+			steps {
+				script {
+					if (params.eksctl_action == 'create') {
+						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
+					} else {
+						sh 'aws cloudformation delete-stack --stack-name eksctl-devsecops-buggy-app-cluster --region us-east-1'
+						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to delete the cloudformation template instead
+						// sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
+						// sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
+					}
+				}
+			}
+		}
 		// stage('Connect to EKS Cluster') {
 		// 	steps{
 		// 		script {
@@ -93,16 +93,17 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Create Deployment and Service') {
-			steps {
-				script {
-					// sh 'kubectl create namespace devsecops'
-					// sh 'cat ~/.kube/config'
-					sh 'kubectl delete all --all -n devsecops'
-					sh 'kubectl apply -f deployment.yaml --namespace devsecops'
-				}
-			}
-		}
+		// stage('Create Deployment and Service') {
+		// 	steps {
+		// 		script {
+		// 			// sh 'kubectl create namespace devsecops'
+		// 			// sh 'cat ~/.kube/config'
+		// 			sh 'kubectl delete all --all -n devsecops'
+		// 			sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+		// 		}
+		// 	}
+		// }
+
 		// stage('Synk SCA Analysis') {
 		// 	steps {
 		// 		withCredentials([string(credentialsId: 'SYNK_TOKEN', variable: 'SYNK_TOKEN')]) {
