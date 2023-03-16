@@ -4,11 +4,11 @@ pipeline {
 		maven 'mvn'
 	}
 	parameters {
-		choice(
-			name: 'ecr_action',
-			choices: ['create', 'delete'],
-			description: 'Creating or deleting ECR Repo'
-		)
+		// choice(
+		// 	name: 'ecr_action',
+		// 	choices: ['create', 'delete'],
+		// 	description: 'Creating or deleting ECR Repo'
+		// )
 		choice(
 			name: 'eksctl_action',
 			choices: ['create', 'delete'],
