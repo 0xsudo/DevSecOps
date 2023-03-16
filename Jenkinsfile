@@ -5,11 +5,11 @@ pipeline {
 	}
 	parameters {
 		choice(
-			name: 'ECR_Action',
-			choices: ['Create', 'Destroy']
+			name: 'ecr_action',
+			choices: 'create/ndestroy'
 		)
 		text(
-			name: 'Our_App',
+			name: 'our_app',
 			defaultValue: 'asg-buggy',
 			description: 'Name for our application'
 		)
@@ -48,10 +48,10 @@ pipeline {
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					if (params.ECR_Action == 'Create') {
-						sh 'aws ecr create-repository --repository-name ${params.Our_App}'
+					if (params.ecr_action == "create") {
+						sh 'aws ecr create-repository --repository-name ${params.our_app}'
 					} else {
-						sh'aws ecr delete-repository --repository-name ${params.Our_App}'
+						sh'aws ecr delete-repository --repository-name ${params.our_app}'
 					}
 				}
 			}
