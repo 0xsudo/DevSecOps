@@ -6,7 +6,8 @@ pipeline {
 	parameters {
 		choice(
 			name: 'ecr_action',
-			choices: 'create/ndestroy'
+			choices: 'create/ndelete',
+			description: 'Creating or deleting ECR Repo'
 		)
 		text(
 			name: 'our_app',
