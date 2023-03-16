@@ -48,7 +48,7 @@ pipeline {
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					if (params.ECR_Action == 'Create') > {
+					if ( params.ECR_Action == 'Create' ) {
 						sh 'aws ecr create-repository --repository-name ${params.Our_App}'
 					} else {
 						sh'aws ecr delete-repository --repository-name ${params.Our_App}'
