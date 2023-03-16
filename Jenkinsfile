@@ -96,8 +96,8 @@ pipeline {
 		stage('Create Deployment and Service') {
 			steps {
 				script {
-					// sh 'kubectl create namespace devsecops'
-					sh 'kubectl delete all --all -n devsecops'
+					sh 'kubectl create namespace devsecops'
+					// sh 'kubectl delete all --all -n devsecops'
 					sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 				}
 			}
