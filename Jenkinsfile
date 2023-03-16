@@ -3,6 +3,18 @@ pipeline {
 	tools {
 		maven 'mvn'
 	}
+	parameters {
+		choice(
+			name: 'ECR_Action',
+			choices: ['Create', 'Destroy']
+		)
+		text(
+			name: 'Our_App',
+			defaultValue: 'asg-buggy',
+			description: 'Name for our application'
+		)
+	}
+
 	stages {
 		stage('Git Checkout') {
 			steps{
@@ -36,8 +48,10 @@ pipeline {
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					if (sh'aws ecr delete-repository --repository-name asg-buggy') > /dev/null 2>$1 {
-						sh 'aws ecr create-repository --repository-name asg-buggy'
+					if (params.ECR_Action == 'Create') > {
+						sh 'aws ecr create-repository --repository-name ${params.Our_App}'
+					} else {
+						sh'aws ecr delete-repository --repository-name ${params.Our_App}'
 					}
 				}
 			}
