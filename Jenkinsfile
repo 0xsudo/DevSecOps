@@ -76,7 +76,7 @@ pipeline {
 					if (params.eksctl_action == 'create') {
 						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --spot --tags "app=buggy-app" --version 1.25'
 					} else {
-						sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1 --approve'
+						sh 'eksctl delete nodegroup --name linux-buggy-app --region us-east-1 --approve'
 						sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
 					}
 				}
