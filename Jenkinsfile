@@ -9,11 +9,11 @@ pipeline {
 			choices: ['create', 'delete'],
 			description: 'Creating or deleting ECR Repo'
 		)
-		text(
-			name: 'our_app',
-			defaultValue: 'asg-buggy',
-			description: 'Name for our application'
-		)
+		// text(
+		// 	name: 'our_app',
+		// 	defaultValue: 'buggy-app',
+		// 	description: 'Name for our application'
+		// )
 	}
 
 	stages {
@@ -50,9 +50,9 @@ pipeline {
 			steps {
 				script {
 					if (params.ecr_action == 'create') {
-						sh 'aws ecr create-repository --repository-name asg-buggy'
+						sh 'aws ecr create-repository --repository-name buggy-app'
 					} else {
-						sh'aws ecr delete-repository --repository-name asg-buggy'
+						sh'aws ecr delete-repository --repository-name buggy-app'
 					}
 				}
 			}
