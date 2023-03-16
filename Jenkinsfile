@@ -76,8 +76,10 @@ pipeline {
 					if (params.eksctl_action == 'create') {
 						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --spot --tags "app=buggy-app" --version 1.25'
 					} else {
-						sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
-						sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
+						sh 'aws cloudformation delete-stack --stack-name eksctl-devsecops-buggy-app-cluster --region us-east-1'
+						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to delete the cloudformation template instead
+						// sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
+						// sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
 					}
 				}
 			}
