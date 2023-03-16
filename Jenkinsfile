@@ -9,6 +9,11 @@ pipeline {
 			choices: ['create', 'delete'],
 			description: 'Creating or deleting ECR Repo'
 		)
+		choice(
+			name: 'eksctl_action',
+			choices: ['create', 'delete'],
+			description: 'Creating or deleting EKS cluster'
+		)
 		// text(
 		// 	name: 'our_app',
 		// 	defaultValue: 'buggy-app',
@@ -46,17 +51,17 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Create ECR Registry') {
-			steps {
-				script {
-					if (params.ecr_action == 'create') {
-						sh 'aws ecr create-repository --repository-name buggy-app'
-					} else {
-						sh'aws ecr delete-repository --repository-name buggy-app --force'
-					}
-				}
-			}
-		}
+		// stage('Create ECR Registry') {
+		// 	steps {
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				sh 'aws ecr create-repository --repository-name buggy-app'
+		// 			} else {
+		// 				sh'aws ecr delete-repository --repository-name buggy-app --force'
+		// 			}
+		// 		}
+		// 	}
+		// }
 		// stage('Docker Push') {
 		// 	steps {
 		// 		script {
@@ -65,15 +70,24 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create EKS Cluster') {
-		// 	steps {
-		// 		script {
-		// 			withKubeConfig([credentialsId: '']){
-		// 				sh 'eksctl create cluster --name kubernetes-cluster --version 1.23 --region us-east-1 --nodegroup-name linux-nodes --node-type t2.micro --nodes 2 '
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Create EKS Cluster') {
+			steps {
+				script {
+					if (params.eksctl_action == 'create') {
+						sh 'eksctl create cluster --name devsecops_buggyapp --region us-east-1 --nodegroup-name linux_buggy_app --nodes 2 --instance-types t2.nano --spot --tag "app=buggy-app" --version 1.25'
+					} else {
+						sh 'eksctl delete cluster --name devsecops_buggyapp --region us-east-1'
+					}
+				}
+			}
+		}
+		stage('Connect to Cluster') {
+			steps{
+				script {
+					sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops_buggyapp'
+				}
+			}
+		}
 		// stage('Synk SCA Analysis') {
 		// 	steps {
 		// 		withCredentials([string(credentialsId: 'SYNK_TOKEN', variable: 'SYNK_TOKEN')]) {
