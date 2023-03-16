@@ -49,10 +49,10 @@ pipeline {
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					if (params.ecr_action == "create") {
-						sh 'aws ecr create-repository --repository-name asg-buggy'
+					if (params.ecr_action == 'create' || params.our_app == '') {
+						sh 'aws ecr create-repository --repository-name ${params.our_app}'
 					} else {
-						sh'aws ecr delete-repository --repository-name asg-buggy'
+						sh'aws ecr delete-repository --repository-name ${params.our_app}'
 					}
 				}
 			}
