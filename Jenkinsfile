@@ -81,7 +81,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Connect to Cluster') {
+		stage('Connect to EKS Cluster') {
 			steps{
 				script {
 					sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
