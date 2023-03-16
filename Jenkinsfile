@@ -97,7 +97,7 @@ pipeline {
 			steps {
 				script {
 					// sh 'kubectl create namespace devsecops'
-					sh 'cat ~/.kube/config'
+					// sh 'cat ~/.kube/config'
 					sh 'kubectl delete all --all -n devsecops'
 					sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 				}
