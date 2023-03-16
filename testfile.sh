@@ -1,1 +1,2 @@
-echo "hello tomorrow"
+#!/bin/bash
+sudo $USER echo "hello"
