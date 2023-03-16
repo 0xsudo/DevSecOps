@@ -24,20 +24,21 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Docker Build') {
-			steps {
-				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-					script {
-						docker_image=docker.build('buggy-app')
-					}
-				}
-			}
-		}
+		// stage('Docker Build') {
+		// 	steps {
+		// 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+		// 			script {
+		// 				docker_image=docker.build('buggy-app')
+		// 			}
+		// 		}
+		// 	}
+		// }
 		stage('Create ECR Registry') {
 			steps {
 				script {
-					sh 'aws ecr delete-repository --repository-name asg-buggy'
-					sh 'aws ecr create-repository --repository-name asg-buggy'
+					if ! (aws ecr delete-repository --repository-name asg-buggy) > /dev/null 2>$1 {
+						sh 'aws ecr create-repository --repository-name asg-buggy'
+					}
 				}
 			}
 		}
@@ -46,6 +47,15 @@ pipeline {
 		// 		script {
 		// 			docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 		// 			docker_image.push('latest')
+		// 		}
+		// 	}
+		// }
+		// stage('Create EKS Cluster') {
+		// 	steps {
+		// 		script {
+		// 			withKubeConfig([credentialsId: '']){
+		// 				sh 'eksctl create cluster --name kubernetes-cluster --version 1.23 --region us-east-1 --nodegroup-name linux-nodes --node-type t2.micro --nodes 2 '
+		// 			}
 		// 		}
 		// 	}
 		// }
