@@ -24,6 +24,7 @@ pipeline {
 	stages {
 		stage('Git Checkout') {
 			steps{
+				// add if ()
 				git branch: 'main', credentialsId: 'jenkins_pk', url: 'git@github.com:0xsudo/DevSecOps.git'
 			}
 		}
@@ -101,9 +102,11 @@ pipeline {
 		stage('Create Deployment and Service') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'kubectl delete all --all -n devsecops'
-						sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+					retry (count: 3){
+						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+							sh 'kubectl delete all --all -n devsecops'
+							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+						}
 					}
 				}				
 			}
