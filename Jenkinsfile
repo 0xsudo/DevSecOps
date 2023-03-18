@@ -78,7 +78,7 @@ pipeline {
 		stage('Create EKS Cluster') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create') {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
 					} else {
 						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
@@ -91,7 +91,7 @@ pipeline {
 		stage('Connect to EKS Cluster') {
 			steps{
 				script {
-					if (params.eksctl_action == 'create') {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'sleep 180; echo "EKS cluster is up"'
 						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
 					}
@@ -101,7 +101,7 @@ pipeline {
 		stage('Create Deployment and Service') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create') {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'kubectl delete all --all -n devsecops'
 						sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 					}
@@ -121,7 +121,7 @@ pipeline {
 		stage('Wait for deployment on EKS') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create') {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
 					}
 				}
@@ -130,54 +130,13 @@ pipeline {
 		stage('DAST OWASP ZAP Analysis') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create') {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'zap.sh -cmd -quickurl http://(kubectl get services/buggy-app --namespace devsecops -o json | jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
 						archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
 					}
 				}
 			}
 		}
-
-		// stage('Synk SCA Analysis') {
-		// 	steps {
-		// 		withCredentials([string(credentialsId: 'SYNK_TOKEN', variable: 'SYNK_TOKEN')]) {
-		// 			sh 'mvn synk:test -fn'
-		// 		}
-		// 	}
-		// }
-		// stage('Build Docker Image') {
-		// 	steps {
-		// 		withDockerRegistry([credentialsId: 'docker', url: '']) {
-		// 			script {
-		// 				app = docker.build('asg')
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('Push Docker Image') {
-		// 	steps {
-		// 		script {
-		// 			docker.withRegistry('aws registry', 'ecr:region:aws-creds') {
-		// 				app.push('latest')
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		// }
-		// stage('Wait before testing') {
-		// 	steps {
-		// 		sh 'sleep 180; echo "Application deployed on k8s, ready for DAST analysis"'
-		// 	}
-		// }
-		// stage('OWASP ZAP DAST Analysis') {
-		// 	steps {
-		// 		withKubeConfig([credentialsId: 'kubeconfig file']) {
-		// 			sh 'zap.sh -cmd -quickurl http://(kubectl get services/asgbuggy --namespace namespace -o json | jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_report.html'
-		// 			archiveArtifacts artifacts: 'DAST_report.html'
-		// 		}
-		// 	}
-		// }
 	}
 	post {
 		always {
