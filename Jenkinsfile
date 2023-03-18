@@ -93,7 +93,7 @@ pipeline {
 			steps{
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'sleep 180; echo "EKS cluster is up"'
+						// sh 'sleep 180; echo "EKS cluster is up"'
 						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
 						sh 'sleep 120'
 					}
@@ -106,6 +106,7 @@ pipeline {
 					retry (count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 							sh 'kubectl delete all --all -n devsecops'
+							sh 'kubectl create deployment devsecops'
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
