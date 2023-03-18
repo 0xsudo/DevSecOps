@@ -54,16 +54,16 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create ECR Registry') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				sh 'aws ecr create-repository --repository-name buggy-app'
-		// 			} else {
-		// 				sh'aws ecr delete-repository --repository-name buggy-app --force'
-		// 			}
-		// 		}
-		// 	}
+		stage('Create ECR Registry') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						sh 'aws ecr create-repository --repository-name buggy-app'
+					} else {
+						sh'aws ecr delete-repository --repository-name buggy-app --force'
+					}
+				}
+			}
 		// }
 		// stage('Docker Push') {
 		// 	steps {
@@ -76,19 +76,19 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create EKS Cluster') {
-		// 	steps {
-		// 		script {
-		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
-		// 			} else {
-		// 				// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
-		// 				sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
-		// 				sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Create EKS Cluster') {
+			steps {
+				script {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
+					} else {
+						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
+						sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
+						sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
+					}
+				}
+			}
+		}
 		stage('Connect to EKS Cluster') {
 			steps{
 				script {
@@ -106,7 +106,7 @@ pipeline {
 					retry (count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 							sh 'kubectl delete all --all -n devsecops'
-							sh 'kubectl create namespace devsecops'
+							// sh 'kubectl create namespace devsecops'
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
@@ -136,8 +136,8 @@ pipeline {
 			steps {
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'zap.sh -cmd -quickurl http://(kubectl get services/buggy-app --namespace devsecops -o json | jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
-						archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
+						sh 'zap.sh -cmd -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
+						archiveArtifacts artifacts 'DAST_ZAP_buggyapp.html'
 					}
 				}
 			}
