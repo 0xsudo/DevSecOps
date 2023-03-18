@@ -54,7 +54,7 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Create ECR Registry') {
+		stage('Create/Delete ECR Registry') {
 			steps {
 				script {
 					if (params.ecr_action == 'create') {
@@ -64,7 +64,7 @@ pipeline {
 					}
 				}
 			}
-		// }
+		}
 		// stage('Docker Push') {
 		// 	steps {
 		// 		script {
@@ -76,7 +76,7 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Create EKS Cluster') {
+		stage('Create/Delete EKS Cluster') {
 			steps {
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
@@ -89,30 +89,30 @@ pipeline {
 				}
 			}
 		}
-		stage('Connect to EKS Cluster') {
-			steps{
-				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						// sh 'sleep 180; echo "EKS cluster is up"'
-						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
-						sh 'sleep 120'
-					}
-				}
-			}
-		}
-		stage('Create Deployment and Service') {
-			steps {
-				script {
-					retry (count: 3){
-						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh 'kubectl delete all --all -n devsecops'
-							// sh 'kubectl create namespace devsecops'
-							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
-						}
-					}
-				}				
-			}
-		}
+		// stage('Connect to EKS Cluster') {
+		// 	steps{
+		// 		script {
+		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 				// sh 'sleep 180; echo "EKS cluster is up"'
+		// 				sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
+		// 				sh 'sleep 120'
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('Create Deployment and Service') {
+		// 	steps {
+		// 		script {
+		// 			retry (count: 3){
+		// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 					sh 'kubectl delete all --all -n devsecops'
+		// 					// sh 'kubectl create namespace devsecops'
+		// 					sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+		// 				}
+		// 			}
+		// 		}				
+		// 	}
+		// }
 
 		// alternatively
 		// stage('Kubernetes Deployment') {
