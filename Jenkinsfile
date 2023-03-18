@@ -129,7 +129,7 @@ pipeline {
 		}
 		stage('DAST OWASP ZAP Analysis') {
 			steps {
-				scrip {
+				script {
 					if (params.eksctl_action == 'create') {
 						sh 'zap.sh -cmd -quickurl http://(kubectl get services/buggy-app --namespace devsecops -o json | jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
 						archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
