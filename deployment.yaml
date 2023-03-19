@@ -15,7 +15,7 @@ spec:
         app: buggy-app
     spec:
       containers:
-      - name: buggy-app-container
+      - name: buggy-app
         image: 636181284446.dkr.ecr.us-east-1.amazonaws.com/buggy-app:latest
         imagePullPolicy: Always
         ports:
