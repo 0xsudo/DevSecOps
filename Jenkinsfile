@@ -24,22 +24,30 @@ pipeline {
 	stages {
 		stage('Git Checkout') {
 			steps{
-				// add if ()
-				git branch: 'main', credentialsId: 'jenkins_pk', url: 'git@github.com:0xsudo/DevSecOps.git'
+				if (env.BRANCH_NAME == 'main') {
+					git credentialsId: 'jenkins_pk', url: 'git@github.com:0xsudo/DevSecOps.git'
+				}
 			}
 		}
 		// stage('Compile and Run Sonar Analysis') {
 		// 	steps {
-		// 		withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-		// 			sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
-
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+		// 					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+		// 				}
+		// 			}
 		// 		}
 		// 	}
 		// }
 		// stage('SCA Snyk Analysis') {
 		// 	steps {
-		// 		withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-		// 			sh 'mvn snyk:test -fn'
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+		// 					sh 'mvn snyk:test -fn'
+		// 				}
+		// 			}
 		// 		}
 		// 	}
 		// }
