@@ -127,7 +127,7 @@ pipeline {
 			steps {
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'sleep 120; echo "Deployment ready for DAST analysis on EKS"'
+						sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
 					}
 				}
 			}
