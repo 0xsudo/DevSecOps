@@ -89,17 +89,17 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Connect to EKS Cluster') {
-		// 	steps{
-		// 		script {
-		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				// sh 'sleep 180; echo "EKS cluster is up"'
-		// 				sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
-		// 				sh 'sleep 120'
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Connect to EKS Cluster') {
+			steps{
+				script {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						// sh 'sleep 180; echo "EKS cluster is up"'
+						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
+						sh 'sleep 120'
+					}
+				}
+			}
+		}
 		stage('Create Deployment and Service') {
 			steps {
 				script {
