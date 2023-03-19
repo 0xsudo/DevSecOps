@@ -15,10 +15,15 @@ pipeline {
 			description: 'Creating or deleting EKS cluster'
 		)
 		// string(
-		// 	name: 'our_app',
+		// 	name: 'buggy_app',
 		// 	defaultValue: 'buggy-app',
 		// 	description: 'Name for our application'
 		// )
+		string(
+			name: 'namespace',
+			defaultValue: 'devsecops',
+			description: 'Name for our namespace'
+		)
 	}
 
 	stages {
@@ -101,7 +106,7 @@ pipeline {
 			steps{
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
+						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-${params.buggy_app}'
 						sh 'sleep 120'
 					}
 				}
@@ -112,9 +117,9 @@ pipeline {
 				script {
 					retry(count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh 'kubectl delete namespace devsecops'
-							sh 'kubectl create namespace devsecops'
-							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+							sh 'kubectl delete namespace ${params.namespace}'
+							sh 'kubectl create namespace ${params.namespace}'
+							sh 'kubectl apply -f deployment.yaml --namespace ${params.namespace}'
 						}
 					}
 				}				
@@ -130,27 +135,27 @@ pipeline {
 		// 		}
 		// 	}
 
-		stage('Wait for deployment on EKS') {
-			steps {
-				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
-					}
-				}
-			}
-		}
-		stage('DAST Analysis: OWASP ZAP') {
-			steps {
-				script {
-					retry(count: 3) {
-						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'zap.sh -cmd -port 9090 -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
-						archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
-						}
-					}
-				}
-			}
-		}
+		// stage('Wait for deployment on EKS') {
+		// 	steps {
+		// 		script {
+		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 				sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('DAST Analysis: OWASP ZAP') {
+		// 	steps {
+		// 		script {
+		// 			retry(count: 3) {
+		// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 				sh 'zap.sh -cmd -port 9090 -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
+		// 				archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 	post {
 		always {
