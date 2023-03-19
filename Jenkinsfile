@@ -14,11 +14,11 @@ pipeline {
 			choices: ['create', 'delete'],
 			description: 'Creating or deleting EKS cluster'
 		)
-		// string(
-		// 	name: 'buggy_app',
-		// 	defaultValue: 'buggy-app',
-		// 	description: 'Name for our application'
-		// )
+		string(
+			name: 'buggy_app',
+			defaultValue: 'buggy-app',
+			description: 'Name for our application'
+		)
 		string(
 			name: 'namespace',
 			defaultValue: 'devsecops',
