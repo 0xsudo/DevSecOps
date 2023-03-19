@@ -111,7 +111,7 @@ pipeline {
 				script {
 					retry(count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh 'kubectl delete namespace devsecops'
+							sh 'kubectl delete all --all -n devsecops'
 							sh 'kubectl create namespace devsecops'
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
