@@ -31,17 +31,17 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('ECR Registry Action') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				sh 'aws ecr create-repository --repository-name buggy-app'
-		// 			} else {
-		// 				sh'aws ecr delete-repository --repository-name buggy-app --force'
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('ECR Registry Action') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						sh 'aws ecr create-repository --repository-name buggy-app'
+					} else {
+						sh'aws ecr delete-repository --repository-name buggy-app --force'
+					}
+				}
+			}
+		}
 		// stage('Docker Push') {
 		// 	steps {
 		// 		script {
@@ -75,19 +75,19 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('EKS Cluster Action') {
-		// 	steps {
-		// 		script {
-		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
-		// 			} else {
-		// 				// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
-		// 				sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
-		// 				sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('EKS Cluster Action') {
+			steps {
+				script {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
+					} else {
+						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
+						sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
+						sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
+					}
+				}
+			}
+		}
 		stage('EKS Cluster Connection') {
 			steps{
 				script {
