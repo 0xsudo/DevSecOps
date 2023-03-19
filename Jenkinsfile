@@ -108,7 +108,7 @@ pipeline {
 			steps{
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-$params.buggy_app'
+						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-params.buggy_app'
 						sh 'sleep 120'
 					}
 				}
@@ -119,9 +119,9 @@ pipeline {
 				script {
 					retry(count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh 'kubectl delete namespace $params.namespace'
-							sh 'kubectl create namespace $params.namespace'
-							sh 'kubectl apply -f deployment.yaml --namespace $params.namespace'
+							sh 'kubectl delete namespace params.namespace'
+							sh 'kubectl create namespace params.namespace'
+							sh 'kubectl apply -f deployment.yaml --namespace params.namespace'
 						}
 					}
 				}				
