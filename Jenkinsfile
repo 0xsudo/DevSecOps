@@ -4,19 +4,13 @@ pipeline {
 		maven 'mvn'
 	}
 	parameters {
-		choice(
-			name: 'ecr_action',
-			choices: ['create', 'delete'],
-			description: 'Creating or deleting ECR Repo'
-		)
-		choice(
-			name: 'eksctl_action',
-			choices: ['create', 'delete'],
-			description: 'Creating or deleting EKS cluster'
-		)
-		string name: 'buggy_app', defaultValue: 'buggy-app', description: 'Name for our application', trim: true 
+		choice choices: ['create', 'delete'], description: 'Creating or deleting ECR repo', name: 'ecr_action'
 
-		string name: 'namespace', defaultValue: 'devsecops', description: 'Name for our namespace', trim: true
+		choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
+		
+		string defaultValue: 'buggy-app', description: 'Name for our application', name: 'buggy_app', trim: true 
+
+		string defaultValue: 'devsecops', description: 'Name for our namespace', name: 'namespace', trim: true
 	}
 
 	stages {
