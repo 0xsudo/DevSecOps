@@ -19,93 +19,93 @@ pipeline {
 					}
 				}
 			}
-		}
-		stage('Docker Build') {
-			steps {
-				retry(count: 3) {
-					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-						script {
-							if (params.ecr_action == 'create') {
-								docker_image=docker.build('buggy-app')
-							}
-						}
-					}
-				}
-			}
-		}
-		stage('ECR Registry Action') {
-			steps {
-				script {
-					if (params.ecr_action == 'create') {
-						sh 'aws ecr create-repository --repository-name buggy-app'
-					} else {
-						sh'aws ecr delete-repository --repository-name buggy-app --force'
-					}
-				}
-			}
-		}
-		stage('Docker Push') {
-			steps {
-				script {
-					retry(count: 3) {
-						if (params.ecr_action == 'create') {
-							docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-								docker_image.push('latest')
-							}
-						}
-					}
-				}
-			}
-		}
-		stage('SAST Analysis: SonarCloud') {
-			steps {
-				script {
-					retry(count: 3) {
-						if (params.ecr_action == 'create') {
-							withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-								sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
-							}
-						}
-					}
-				}
-			}
-		}
-		stage('SCA Analysis: Snyk') {
-			steps {
-				script {
-					retry(count: 3) {
-						if (params.ecr_action == 'create') {
-							withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-								sh 'mvn snyk:test -fn'
-							}
-						}
-					}
-				}
-			}
-		}
-		stage('EKS Cluster Action') {
-			steps {
-				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
-					} else {
-						// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
-						sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
-						sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
-					}
-				}
-			}
-		}
-		stage('EKS Cluster Connection') {
-			steps{
-				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
-						sh 'sleep 120'
-					}
-				}
-			}
-		}
+		// }
+		// stage('Docker Build') {
+		// 	steps {
+		// 		retry(count: 3) {
+		// 			withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+		// 				script {
+		// 					if (params.ecr_action == 'create') {
+		// 						docker_image=docker.build('buggy-app')
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('ECR Registry Action') {
+		// 	steps {
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				sh 'aws ecr create-repository --repository-name buggy-app'
+		// 			} else {
+		// 				sh'aws ecr delete-repository --repository-name buggy-app --force'
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('Docker Push') {
+		// 	steps {
+		// 		script {
+		// 			retry(count: 3) {
+		// 				if (params.ecr_action == 'create') {
+		// 					docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+		// 						docker_image.push('latest')
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('SAST Analysis: SonarCloud') {
+		// 	steps {
+		// 		script {
+		// 			retry(count: 3) {
+		// 				if (params.ecr_action == 'create') {
+		// 					withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+		// 						sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('SCA Analysis: Snyk') {
+		// 	steps {
+		// 		script {
+		// 			retry(count: 3) {
+		// 				if (params.ecr_action == 'create') {
+		// 					withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+		// 						sh 'mvn snyk:test -fn'
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('EKS Cluster Action') {
+		// 	steps {
+		// 		script {
+		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 				sh 'eksctl create cluster --name devsecops-buggy-app --region us-east-1 --zones us-east-1a,us-east-1b --nodegroup-name linux-buggy-app --nodes 2 --instance-types t2.nano --tags "app=buggy-app" --version 1.25'
+		// 			} else {
+		// 				// deleting the cluster directly created a race condition btwn node groups and cluster, decided to do it in two steps
+		// 				sh 'eksctl delete nodegroup --name linux-buggy-app --cluster devsecops-buggy-app --region us-east-1'
+		// 				sh 'eksctl delete cluster --name devsecops-buggy-app --region us-east-1 --force'
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('EKS Cluster Connection') {
+		// 	steps{
+		// 		script {
+		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+		// 				sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
+		// 				sh 'sleep 120'
+		// 			}
+		// 		}
+		// 	}
+		// }
 		stage('Deployment & Service Creation') {
 			steps {
 				script {
