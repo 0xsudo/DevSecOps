@@ -103,10 +103,11 @@ pipeline {
 		stage('Create Deployment and Service') {
 			steps {
 				script {
-					retry (count: 3){
+					retry(count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 							sh 'kubectl delete all --all -n devsecops'
 							sh 'kubectl create namespace devsecops'
+							// sh 'sleep 60'
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
@@ -135,9 +136,11 @@ pipeline {
 		stage('DAST OWASP ZAP Analysis') {
 			steps {
 				script {
-					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+					retry(count: 3) {
+						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
 						sh 'zap.sh -cmd -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
 						archiveArtifacts artifacts 'DAST_ZAP_buggyapp.html'
+						}
 					}
 				}
 			}
