@@ -20,17 +20,17 @@ pipeline {
 				}
 			}
 		}
-		// stage('Docker Build') {
-		// 	steps {
-		// 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-		// 			script {
-		// 				if (params.ecr_action == 'create') {
-		// 					docker_image=docker.build('buggy-app')
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Docker Build') {
+			steps {
+				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+					script {
+						if (params.ecr_action == 'create') {
+							docker_image=docker.build('buggy-app')
+						}
+					}
+				}
+			}
+		}
 		stage('ECR Registry Action') {
 			steps {
 				script {
