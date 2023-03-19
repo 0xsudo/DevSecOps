@@ -22,10 +22,12 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-					script {
-						if (params.ecr_action == 'create') {
-							docker_image=docker.build('buggy-app')
+				retry(count: 3) {
+					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+						script {
+							if (params.ecr_action == 'create') {
+								docker_image=docker.build('buggy-app')
+							}
 						}
 					}
 				}
@@ -45,9 +47,11 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					if (params.ecr_action == 'create') {
-						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-							docker_image.push('latest')
+					retry(count: 3) {
+						if (params.ecr_action == 'create') {
+							docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+								docker_image.push('latest')
+							}
 						}
 					}
 				}
@@ -56,9 +60,11 @@ pipeline {
 		stage('SAST Analysis: SonarCloud') {
 			steps {
 				script {
-					if (params.ecr_action == 'create') {
-						withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-							sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+					retry(count: 3) {
+						if (params.ecr_action == 'create') {
+							withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+								sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+							}
 						}
 					}
 				}
@@ -67,9 +73,11 @@ pipeline {
 		stage('SCA Analysis: Snyk') {
 			steps {
 				script {
-					if (params.ecr_action == 'create') {
-						withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-							sh 'mvn snyk:test -fn'
+					retry(count: 3) {
+						if (params.ecr_action == 'create') {
+							withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+								sh 'mvn snyk:test -fn'
+							}
 						}
 					}
 				}
