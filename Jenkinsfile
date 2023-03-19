@@ -43,39 +43,39 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Docker Build') {
-		// 	steps {
-		// 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-		// 			script {
-		// 				if (params.ecr_action == 'create') {
-		// 					docker_image=docker.build('buggy-app')
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('Create/Delete ECR Registry') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				sh 'aws ecr create-repository --repository-name buggy-app'
-		// 			} else {
-		// 				sh'aws ecr delete-repository --repository-name buggy-app --force'
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('Docker Push') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-		// 					docker_image.push('latest')
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Docker Build') {
+			steps {
+				withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+					script {
+						if (params.ecr_action == 'create') {
+							docker_image=docker.build('buggy-app')
+						}
+					}
+				}
+			}
+		}
+		stage('Create/Delete ECR Registry') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						sh 'aws ecr create-repository --repository-name buggy-app'
+					} else {
+						sh'aws ecr delete-repository --repository-name buggy-app --force'
+					}
+				}
+			}
+		}
+		stage('Docker Push') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+							docker_image.push('latest')
+						}
+					}
+				}
+			}
+		}
 		stage('Create/Delete EKS Cluster') {
 			steps {
 				script {
@@ -89,30 +89,30 @@ pipeline {
 				}
 			}
 		}
-		// stage('Connect to EKS Cluster') {
-		// 	steps{
-		// 		script {
-		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				// sh 'sleep 180; echo "EKS cluster is up"'
-		// 				sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
-		// 				sh 'sleep 120'
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('Create Deployment and Service') {
-		// 	steps {
-		// 		script {
-		// 			retry (count: 3){
-		// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 					sh 'kubectl delete all --all -n devsecops'
-		// 					// sh 'kubectl create namespace devsecops'
-		// 					sh 'kubectl apply -f deployment.yaml --namespace devsecops'
-		// 				}
-		// 			}
-		// 		}				
-		// 	}
-		// }
+		stage('Connect to EKS Cluster') {
+			steps{
+				script {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						// sh 'sleep 180; echo "EKS cluster is up"'
+						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
+						sh 'sleep 120'
+					}
+				}
+			}
+		}
+		stage('Create Deployment and Service') {
+			steps {
+				script {
+					retry (count: 3){
+						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+							sh 'kubectl delete all --all -n devsecops'
+							// sh 'kubectl create namespace devsecops'
+							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
+						}
+					}
+				}				
+			}
+		}
 
 		// alternatively
 		// stage('Kubernetes Deployment') {
