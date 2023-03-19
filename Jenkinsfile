@@ -42,39 +42,39 @@ pipeline {
 				}
 			}
 		}
-		// stage('Docker Push') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-		// 					docker_image.push('latest')
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('SAST Analysis: SonarCloud') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-		// 					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('SCA Analysis: Snyk') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-		// 					sh 'mvn snyk:test -fn'
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Docker Push') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+							docker_image.push('latest')
+						}
+					}
+				}
+			}
+		}
+		stage('SAST Analysis: SonarCloud') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+							sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+						}
+					}
+				}
+			}
+		}
+		stage('SCA Analysis: Snyk') {
+			steps {
+				script {
+					if (params.ecr_action == 'create') {
+						withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+							sh 'mvn snyk:test -fn'
+						}
+					}
+				}
+			}
+		}
 		stage('EKS Cluster Action') {
 			steps {
 				script {
@@ -121,27 +121,27 @@ pipeline {
 		// 		}
 		// 	}
 
-		// stage('Wait for deployment on EKS') {
-		// 	steps {
-		// 		script {
-		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('DAST Analysis: OWASP ZAP') {
-		// 	steps {
-		// 		script {
-		// 			retry(count: 3) {
-		// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-		// 				sh 'zap.sh -cmd -port 9090 -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
-		// 				archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		stage('Wait for deployment on EKS') {
+			steps {
+				script {
+					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
+					}
+				}
+			}
+		}
+		stage('DAST Analysis: OWASP ZAP') {
+			steps {
+				script {
+					retry(count: 3) {
+						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
+						sh 'zap.sh -cmd -port 9090 -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
+						archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
+						}
+					}
+				}
+			}
+		}
 	}
 	post {
 		always {
