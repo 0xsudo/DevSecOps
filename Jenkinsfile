@@ -29,28 +29,6 @@ pipeline {
 				}
 			}
 		}
-		// stage('Compile and Run Sonar Analysis') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-		// 					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// stage('SCA Snyk Analysis') {
-		// 	steps {
-		// 		script {
-		// 			if (params.ecr_action == 'create') {
-		// 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-		// 					sh 'mvn snyk:test -fn'
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
 		// stage('Docker Build') {
 		// 	steps {
 		// 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
@@ -62,7 +40,7 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create/Delete ECR Registry') {
+		// stage('ECR Registry Action') {
 		// 	steps {
 		// 		script {
 		// 			if (params.ecr_action == 'create') {
@@ -84,7 +62,29 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Create/Delete EKS Cluster') {
+		// stage('SAST Analysis: SonarCloud') {
+		// 	steps {
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+		// 					sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('SCA Analysis: Snyk') {
+		// 	steps {
+		// 		script {
+		// 			if (params.ecr_action == 'create') {
+		// 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+		// 					sh 'mvn snyk:test -fn'
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('EKS Cluster Action') {
 		// 	steps {
 		// 		script {
 		// 			if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
@@ -97,18 +97,17 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Connect to EKS Cluster') {
+		stage('EKS Cluster Connection') {
 			steps{
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						// sh 'sleep 180; echo "EKS cluster is up"'
 						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
 						sh 'sleep 120'
 					}
 				}
 			}
 		}
-		stage('Create Deployment and Service') {
+		stage('Deployment & Service Creation') {
 			steps {
 				script {
 					retry(count: 3){
@@ -126,7 +125,7 @@ pipeline {
 		// stage('Kubernetes Deployment') {
 		// 	steps {
 		// 		withKubeConfig([credentialsId: 'kubeconfig file']) {
-		// 			sh 'kubectl delete all --all -n namespace'
+		// 			sh 'kubectl delete namespace namespace'
 		// 			sh 'kubectl apply -f deployment.yaml --namespace namespace'
 		// 		}
 		// 	}
@@ -140,7 +139,7 @@ pipeline {
 				}
 			}
 		}
-		stage('DAST OWASP ZAP Analysis') {
+		stage('DAST Analysis: OWASP ZAP') {
 			steps {
 				script {
 					retry(count: 3) {
