@@ -6,8 +6,8 @@ pipeline {
 	parameters {
 		choice choices: ['create', 'delete'], description: 'Creating or deleting ECR repo', name: 'ecr_action'
 		choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
-		string defaultValue: 'buggy-app', description: 'Name for our application', name: 'buggy_app', trim: true
-		string defaultValue: 'devsecops', description: 'Name for our namespace', name: 'namespace', trim: true
+		// string defaultValue: 'buggy-app', description: 'Name for our application', name: 'buggy_app', trim: true
+		// string defaultValue: 'devsecops', description: 'Name for our namespace', name: 'namespace', trim: true
 	}
 
 	stages {
@@ -92,7 +92,7 @@ pipeline {
 			steps{
 				script {
 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-${params.buggy_app}'
+						sh 'aws eks update-kubeconfig --region us-east-1 --name devsecops-buggy-app'
 						sh 'sleep 120'
 					}
 				}
@@ -103,9 +103,9 @@ pipeline {
 				script {
 					retry(count: 3){
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh 'kubectl delete namespace ${params.namespace}'
-							sh 'kubectl create namespace ${params.namespace}'
-							sh 'kubectl apply -f deployment.yaml --namespace ${params.namespace}'
+							sh 'kubectl delete namespace devsecops'
+							sh 'kubectl create namespace devsecops'
+							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
 				}				
