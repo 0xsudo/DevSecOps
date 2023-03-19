@@ -19,7 +19,7 @@ pipeline {
 					}
 				}
 			}
-		// }
+		}
 		// stage('Docker Build') {
 		// 	steps {
 		// 		retry(count: 3) {
