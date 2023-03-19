@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: buggy-app-deployment
+  name: buggy-app
+  labels:
+    app: buggy-app
 spec:
   replicas: 1
   selector:
@@ -14,10 +16,23 @@ spec:
     spec:
       containers:
       - name: buggy-app-container
-        image: https://636181284446.dkr.ecr.us-east-1.amazonaws.com/buggy-app
+        image: https://636181284446.dkr.ecr.us-east-1.amazonaws.com/buggy-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 5
+          timeoutSeconds: 2
 # service type loadbalancer       
 ---
 apiVersion: v1
