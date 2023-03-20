@@ -111,7 +111,7 @@ pipeline {
 				script {
 					retry(count: 3) {
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh './namespace_test.sh'
+							sh './namespace_test.sh' //add execute permissions to this file
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
