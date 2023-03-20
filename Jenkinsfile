@@ -111,7 +111,7 @@ pipeline {
 				script {
 					retry(count: 3) {
 						if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-							sh './deployment_test.sh'
+							sh './namespace_test.sh'
 							sh 'kubectl apply -f deployment.yaml --namespace devsecops'
 						}
 					}
