@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![GitHub release](https://img.shields.io/github/release/k-tamura/easybuggy.svg)](https://github.com/k-tamura/easybuggy/releases/latest)
 
-EasyBuggy Vulnerable Web App Modified by A Security Guru :baby_symbol:
+EasyBuggy Vulnerable Web App Modified by kaoka Kelvin
 =
 
 EasyBuggy is a broken web application in order to understand behavior of bugs and vulnerabilities, for example, [memory leak, deadlock, JVM crash, SQL injection and so on](https://github.com/k-tamura/easybuggy#clock4-easybuggy-can-reproduce).
@@ -24,15 +24,15 @@ Access to
 -
 
     $ docker build . -t easybuggy:local # Build container image
-    $ docker run -p 8080:8080 easybuggy:local # Start easybuggy
+    $ docker run -p 8001:8080 easybuggy:local # Start easybuggy
 
 Access to
 
-    http://localhost:8080
+    http://localhost:8001
 
 ### To stop:
 
-  Use <kbd>CTRL</kbd>+<kbd>C</kbd> ( or access to: http://localhost:8080/exit )
+  Use <kbd>CTRL</kbd>+<kbd>C</kbd> ( or access to: http://localhost:8001/exit )
 
 :clock4: For more detail
 -
