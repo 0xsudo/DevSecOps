@@ -21,7 +21,13 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				buggy_app('Docker Build')
+				retry(count: 3) {
+					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+						script {
+							buggy_app('Docker Build')
+						}
+					}
+				}
 			}
 		}
 	// 	stage('ECR Registry Action') {
