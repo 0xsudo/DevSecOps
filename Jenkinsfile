@@ -6,7 +6,7 @@ pipeline {
 	}
 	parameters {
 		choice choices: ['create', 'delete'], description: 'Creating or deleting ECR repo', name: 'ecr_action'
-		choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
+		// choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
 		// string defaultValue: 'buggy-app', description: 'Name for our application', name: 'buggy_app', trim: true
 		// string defaultValue: 'devsecops', description: 'Name for our namespace', name: 'namespace', trim: true
 	}
@@ -15,13 +15,13 @@ pipeline {
 		stage('Git Checkout') {
 			steps {
 				script {
-					baggy_app('Git Checkout')
+					buggy_app('Git Checkout')
 				}
 			}
 		}
 		stage('Docker Build') {
 			steps {
-				baggy_app('Docker Build')
+				buggy_app('Docker Build')
 			}
 		}
 	// 	stage('ECR Registry Action') {
@@ -140,7 +140,7 @@ pipeline {
 	// 			}
 	// 		}
 	// 	}
-	// }
+	}
 	post {
 		always {
 			sh 'docker logout'
