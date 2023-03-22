@@ -75,15 +75,13 @@ pipeline {
 				}				
 			}
 		}
-	// 	stage('Wait for Deployment on EKS') {
-	// 		steps {
-	// 			script {
-	// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-	// 					sh 'sleep 180; echo "Deployment ready for DAST analysis on EKS"'
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('Wait for Deployment on EKS') {
+			steps {
+				script {
+					static_sleep(periodseconds: 180)
+				}
+			}
+		}
 	// 	stage('DAST Analysis: OWASP ZAP') {
 	// 		steps {
 	// 			script {
