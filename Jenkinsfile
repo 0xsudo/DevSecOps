@@ -26,20 +26,20 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('ECR Registry Action') {
-	// 		steps {
-	// 			script {
-	// 				ecr_action(name: 'buggy-app')
-	// 			}
-	// 		}
-	// 	}
-	// 	stage('Docker Push') {
-	// 		steps {
-	// 			script {
-	// 				docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
-	// 			}
-	// 		}
-	// 	}
+		stage('ECR Registry Action') {
+			steps {
+				script {
+					ecr_action(name: 'buggy-app')
+				}
+			}
+		}
+		stage('Docker Push') {
+			steps {
+				script {
+					docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
+				}
+			}
+		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
 	// 			script {
@@ -75,13 +75,13 @@ pipeline {
 	// 			}				
 	// 		}
 	// 	}
-	// 	stage('Wait for Deployment on EKS') {
-	// 		steps {
-	// 			script {
-	// 				static_sleep(periodseconds: 180)
-	// 			}
-	// 		}
-	// 	}
+		stage('Wait for Deployment on EKS') {
+			steps {
+				script {
+					static_sleep(periodseconds: 60)
+				}
+			}
+		}
 	// 	stage('DAST Analysis: OWASP ZAP') {
 	// 		steps {
 	// 			script {
