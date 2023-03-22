@@ -85,7 +85,7 @@ pipeline {
 		stage('DAST Analysis: OWASP ZAP') {
 			steps {
 				script {
-					dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: 'DAST_ZAP_buggyapp.html')
+					dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: '""$BUILD_NUMBER""_DAST_ZAP_buggyapp.html')
 				}
 			}
 		}
