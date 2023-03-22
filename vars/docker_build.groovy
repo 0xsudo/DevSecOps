@@ -3,7 +3,7 @@ def call(Map config = [:]) {
 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 			script {
 				if (params.ecr_action == 'create') {
-					docker_image=docker.build('${config.name}')
+					docker_image=docker_build(${config.name})
 				}
 			}
 		}
