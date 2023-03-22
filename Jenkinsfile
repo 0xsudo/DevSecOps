@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker_build()
+					docker_build(image: 'buggy-app')
 				}
 			}
 		}
@@ -36,7 +36,7 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push(tag: 'latest')
+					docker_push(image: 'buggy-app', tag: 'latest')
 				}
 			}
 		}
