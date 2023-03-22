@@ -26,17 +26,13 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('ECR Registry Action') {
-	// 		steps {
-	// 			script {
-	// 				if (params.ecr_action == 'create') {
-	// 					sh 'aws ecr create-repository --repository-name buggy-app'
-	// 				} else {
-	// 					sh'aws ecr delete-repository --repository-name buggy-app --force'
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('ECR Registry Action') {
+			steps {
+				script {
+					ecr_action(name: 'buggy-app')
+				}
+			}
+		}
 	// 	stage('Docker Push') {
 	// 		steps {
 	// 			script {
