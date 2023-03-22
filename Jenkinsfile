@@ -29,14 +29,14 @@ pipeline {
 		stage('ECR Registry Action') {
 			steps {
 				script {
-					ecr_action(name: 'buggy-app')
+					ecr_action()
 				}
 			}
 		}
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
+					docker_push(tag: 'latest')
 				}
 			}
 		}
