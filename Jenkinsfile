@@ -64,7 +64,7 @@ pipeline {
 		stage('EKS Cluster Connection') {
 			steps{
 				script {
-					eks_connect(clustername:'devsecops-buggy-app', region: 'us-east-1')
+					eks_connect(clustername: 'devsecops-buggy-app', region: 'us-east-1')
 				}
 			}
 		}
@@ -82,18 +82,13 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('DAST Analysis: OWASP ZAP') {
-	// 		steps {
-	// 			script {
-	// 				retry(count: 3) {
-	// 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-	// 					sh 'zap.sh -cmd -port 9090 -quickurl http://$(kubectl get services/buggy-app --namespace devsecops -o json| jq -r ".status.loadBalancer.ingress[] | .hostname") -quickprogress -quickout ${WORKSPACE}/DAST_ZAP_buggyapp.html'
-	// 					archiveArtifacts(artifacts: 'DAST_ZAP_buggyapp.html')
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('DAST Analysis: OWASP ZAP') {
+			steps {
+				script {
+					dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: 'DAST_ZAP_buggyapp.html')
+				}
+			}
+		}
 	}
 	post {
 		always {
