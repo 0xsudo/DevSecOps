@@ -33,19 +33,13 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('Docker Push') {
-	// 		steps {
-	// 			script {
-	// 				retry(count: 3) {
-	// 					if (params.ecr_action == 'create') {
-	// 						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-	// 							docker_image.push('latest')
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('Docker Push') {
+			steps {
+				script {
+					docker_push(tag: 'latest',  region: 'us-east-1', IAMrole: 'devopsrole')
+				}
+			}
+		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
 	// 			script {
