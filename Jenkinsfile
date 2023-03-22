@@ -29,7 +29,7 @@ pipeline {
 	// 	stage('ECR Registry Action') {
 	// 		steps {
 	// 			script {
-	// 				ecr_action(name: 'buggyapp-v1')
+	// 				ecr_action(name: 'buggy-app')
 	// 			}
 	// 		}
 	// 	}
