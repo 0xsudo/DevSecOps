@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker_build(name: 'buggyapp-v1')
+					docker_build(name: 'buggyapp')
 				}
 			}
 		}
