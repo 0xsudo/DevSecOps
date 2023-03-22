@@ -68,29 +68,14 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('Deployment & Service Creation') {
-	// 		steps {
-	// 			script {
-	// 				retry(count: 3) {
-	// 					if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
-	// 						sh './namespace_test.sh' //add execute permissions to this file
-	// 						sh 'kubectl apply -f deployment.yaml --namespace devsecops'
-	// 					}
-	// 				}
-	// 			}				
-	// 		}
-	// 	}
-
-	// 	// alternatively
-	// 	// stage('Kubernetes Deployment') {
-	// 	// 	steps {
-	// 	// 		withKubeConfig([credentialsId: 'kubeconfig file']) {
-	// 	// 			sh 'kubectl delete namespace namespace'
-	// 	// 			sh 'kubectl apply -f deployment.yaml --namespace namespace'
-	// 	// 		}
-	// 	// 	}
-
-	// 	stage('Wait for deployment on EKS') {
+		stage('Deployment & Service Action') {
+			steps {
+				script {
+					deploy_action(namespace: 'devsecops')
+				}				
+			}
+		}
+	// 	stage('Wait for Deployment on EKS') {
 	// 		steps {
 	// 			script {
 	// 				if (params.eksctl_action == 'create' && params.ecr_action == 'create') {
