@@ -22,14 +22,14 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker_build(name: 'buggyapp_""$BUILD_NUMBER""')
+					docker_build(name: 'buggyapp-v1')
 				}
 			}
 		}
 	// 	stage('ECR Registry Action') {
 	// 		steps {
 	// 			script {
-	// 				ecr_action(name: 'buggyapp_""$BUILD_NUMBER""')
+	// 				ecr_action(name: 'buggyapp-v1')
 	// 			}
 	// 		}
 	// 	}
