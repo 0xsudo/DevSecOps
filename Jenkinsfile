@@ -47,19 +47,13 @@ pipeline {
 				}
 			}
 		}
-	// 	stage('SCA Analysis: Snyk') {
-	// 		steps {
-	// 			script {
-	// 				retry(count: 3) {
-	// 					if (params.ecr_action == 'create') {
-	// 						withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-	// 							sh 'mvn snyk:test -fn'
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('SCA Analysis: Snyk') {
+			steps {
+				script {
+					sca_synk()
+				}
+			}
+		}
 	// 	stage('EKS Cluster Action') {
 	// 		steps {
 	// 			script {
