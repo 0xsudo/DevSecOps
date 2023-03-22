@@ -26,70 +26,70 @@ pipeline {
 				}
 			}
 		}
-		stage('ECR Registry Action') {
-			steps {
-				script {
-					ecr_action(name: 'buggy-app')
-				}
-			}
-		}
-		stage('Docker Push') {
-			steps {
-				script {
-					docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
-				}
-			}
-		}
-		stage('SAST Analysis: SonarCloud') {
-			steps {
-				script {
-					sast_sonarcloud(organization: 'buggyapp-devsecops', projectkey: '0xsudo_DevSecOps')
-				}
-			}
-		}
-		stage('SCA Analysis: Snyk') {
-			steps {
-				script {
-					sca_synk()
-				}
-			}
-		}
-		stage('EKS Cluster Action') {
-			steps {
-				script {
-					eks_action(clustername: 'devsecops-buggy-app', region: 'us-east-1', nodegroupname: 'linux-buggy-app', nodes: 2, instancetype: 't2.micro', tag: 'buggy-app', kubernetesversion: 1.25)
-				}
-			}
-		}
-		stage('EKS Cluster Connection') {
-			steps{
-				script {
-					eks_connect(clustername: 'devsecops-buggy-app', region: 'us-east-1')
-				}
-			}
-		}
-		stage('Deployment & Service Action') {
-			steps {
-				script {
-					deploy_action(namespace: 'devsecops')
-				}				
-			}
-		}
-		stage('Wait for Deployment on EKS') {
-			steps {
-				script {
-					static_sleep(periodseconds: 180)
-				}
-			}
-		}
-		stage('DAST Analysis: OWASP ZAP') {
-			steps {
-				script {
-					dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: '""$BUILD_NUMBER""_DAST_ZAP_buggyapp.html')
-				}
-			}
-		}
-	}
+	// 	stage('ECR Registry Action') {
+	// 		steps {
+	// 			script {
+	// 				ecr_action(name: 'buggy-app')
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('Docker Push') {
+	// 		steps {
+	// 			script {
+	// 				docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('SAST Analysis: SonarCloud') {
+	// 		steps {
+	// 			script {
+	// 				sast_sonarcloud(organization: 'buggyapp-devsecops', projectkey: '0xsudo_DevSecOps')
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('SCA Analysis: Snyk') {
+	// 		steps {
+	// 			script {
+	// 				sca_synk()
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('EKS Cluster Action') {
+	// 		steps {
+	// 			script {
+	// 				eks_action(clustername: 'devsecops-buggy-app', region: 'us-east-1', nodegroupname: 'linux-buggy-app', nodes: 2, instancetype: 't2.micro', tag: 'buggy-app', kubernetesversion: 1.25)
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('EKS Cluster Connection') {
+	// 		steps{
+	// 			script {
+	// 				eks_connect(clustername: 'devsecops-buggy-app', region: 'us-east-1')
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('Deployment & Service Action') {
+	// 		steps {
+	// 			script {
+	// 				deploy_action(namespace: 'devsecops')
+	// 			}				
+	// 		}
+	// 	}
+	// 	stage('Wait for Deployment on EKS') {
+	// 		steps {
+	// 			script {
+	// 				static_sleep(periodseconds: 180)
+	// 			}
+	// 		}
+	// 	}
+	// 	stage('DAST Analysis: OWASP ZAP') {
+	// 		steps {
+	// 			script {
+	// 				dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: '""$BUILD_NUMBER""_DAST_ZAP_buggyapp.html')
+	// 			}
+	// 		}
+	// 	}
+	// }
 	post {
 		always {
 			sh 'docker logout'
