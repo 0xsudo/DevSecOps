@@ -36,23 +36,17 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push(tag: 'latest',  region: 'us-east-1', IAMrole: 'devopsrole')
+					docker_push(tag: 'latest', region: 'us-east-1', iamrole: 'devopsrole')
 				}
 			}
 		}
-	// 	stage('SAST Analysis: SonarCloud') {
-	// 		steps {
-	// 			script {
-	// 				retry(count: 3) {
-	// 					if (params.ecr_action == 'create') {
-	// 						withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-	// 							sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=0xsudo_DevSecOps -Dsonar.organization=buggyapp-devsecops -Dsonar.host.url=https://sonarcloud.io' //-Dsonar.login=sonar_token
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+		stage('SAST Analysis: SonarCloud') {
+			steps {
+				script {
+					sast_sonarcloud(organization: 'buggyapp-devsecops', projectkey: '0xsudo_DevSecOps')
+				}
+			}
+		}
 	// 	stage('SCA Analysis: Snyk') {
 	// 		steps {
 	// 			script {
