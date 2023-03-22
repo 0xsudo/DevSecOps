@@ -15,18 +15,14 @@ pipeline {
 		stage('Git Checkout') {
 			steps {
 				script {
-					buggy_app('Git Checkout')
+					git_chkout('Git Checkout')
 				}
 			}
 		}
 		stage('Docker Build') {
 			steps {
-				retry(count: 3) {
-					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-						script {
-							buggy_app('Docker Build')
-						}
-					}
+				script {
+					docker_build()
 				}
 			}
 		}
