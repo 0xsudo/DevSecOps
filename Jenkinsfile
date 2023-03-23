@@ -36,7 +36,7 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push(image: 'buggy-app', tag: 'latest')
+					docker_push(tag: 'latest')
 				}
 			}
 		}
