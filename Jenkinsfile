@@ -26,13 +26,13 @@ pipeline {
 				}
 			}
 		}
-		stage('ECR Registry Action') {
-			steps {
-				script {
-					ecr_action()
-				}
-			}
-		}
+		// stage('ECR Registry Action') {
+		// 	steps {
+		// 		script {
+		// 			ecr_action()
+		// 		}
+		// 	}
+		// }
 		stage('Docker Push') {
 			steps {
 				script {
