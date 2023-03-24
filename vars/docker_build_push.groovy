@@ -3,10 +3,9 @@ def call() {
 		withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 			script {
 				if (params.ecr_action == 'create') {
-					img = docker.build('buggyapp')
-					docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-						img.push('latest')
-					}
+					sh 'docker build buggyapp .'
+					sh 'docker tag buggyapp https://636181284446.dkr.ecr.us-east-1.amazonaws.com/buggyapp:latest'
+					sh 'docker push https://636181284446.dkr.ecr.us-east-1.amazonaws.com/buggyapp:latest'
 				}
 			}
 		}
