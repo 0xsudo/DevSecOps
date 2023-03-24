@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker_build()
+					docker_build_push(tag: 'latest', name: 'buggyapp')
 				}
 			}
 		}
@@ -33,13 +33,6 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		stage('Docker Push') {
-			steps {
-				script {
-					docker_push(tag: 'latest')
-				}
-			}
-		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
 	// 			script {
