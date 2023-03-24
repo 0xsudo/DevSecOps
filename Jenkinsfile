@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script {
-					docker_build_push(tag: 'latest')
+					docker_build_push()
 				}
 			}
 		}
