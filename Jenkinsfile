@@ -6,7 +6,7 @@ pipeline {
 	}
 	parameters {
 		choice choices: ['create', 'delete'], description: 'Creating or deleting ECR repo', name: 'ecr_action'
-		choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
+		// choice choices: ['create', 'delete'], description: 'Creating or deleting EKS cluster', name: 'eksctl_action'
 		// string defaultValue: 'buggy-app', description: 'Name for our application', name: 'buggy_app', trim: true
 		// string defaultValue: 'devsecops', description: 'Name for our namespace', name: 'namespace', trim: true
 	}
@@ -25,7 +25,7 @@ pipeline {
 					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 						script {
 							if (params.ecr_action == 'create') {
-								docker_image=docker.build('buggyapp')
+								docker_image=docker.build('buggy-app')
 							}
 						}
 					}
