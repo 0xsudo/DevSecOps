@@ -21,8 +21,12 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				script {
-					docker_build_push()
+				retry(count: 3) {
+					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
+						script {
+							img = docker.build('buggyapp')
+						}
+					}
 				}
 			}
 		}
@@ -33,6 +37,14 @@ pipeline {
 		// 		}
 		// 	}
 		// }
+		stage('Docker Push') {
+			steps {
+				retry(count: 3) {
+					docker.withRegstry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+						img.push('latest')
+					}
+				}
+		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
 	// 			script {
