@@ -44,6 +44,7 @@ pipeline {
 						img.push('latest')
 					}
 				}
+			}
 		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
