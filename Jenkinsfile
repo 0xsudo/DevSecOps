@@ -39,8 +39,8 @@ pipeline {
 		// }
 		stage('Docker Push') {
 			steps {
-				script {
-					retry(count: 3) {
+				retry(count: 3) {
+					script {
 						docker.withRegstry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 							img.push('latest')
 						}
