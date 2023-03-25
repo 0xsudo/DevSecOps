@@ -24,25 +24,29 @@ pipeline {
 				retry(count: 3) {
 					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 						script {
-							img = docker.build('buggyapp')
+							if (params.ecr_action == 'create') {
+								docker_image=docker.build('buggyapp')
+							}
 						}
 					}
 				}
 			}
 		}
-		// stage('ECR Registry Action') {
-		// 	steps {
-		// 		script {
-		// 			ecr_action()
-		// 		}
-		// 	}
-		// }
+		stage('ECR Registry Action') {
+			steps {
+				script {
+					ecr_action()
+				}
+			}
+		}
 		stage('Docker Push') {
 			steps {
-				retry(count: 3) {
-					script {
-						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-							img.push('latest')
+				script {
+					retry(count: 3) {
+						if (params.ecr_action == 'create') {
+							docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+								docker_image.push('latest')
+							}
 						}
 					}
 				}
