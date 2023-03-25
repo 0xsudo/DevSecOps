@@ -41,7 +41,7 @@ pipeline {
 			steps {
 				retry(count: 3) {
 					script {
-						docker.withRegstry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
+						docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 							img.push('latest')
 						}
 					}
