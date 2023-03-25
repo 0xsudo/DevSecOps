@@ -19,24 +19,9 @@ pipeline {
 				}
 			}
 		}
-		stage('Wait for Deployment on EKS') {
-			steps {
-				script {
-					static_sleep(60)
-				}
-			}
-		}
 		stage('Docker Build') {
 			steps {
-				retry(count: 3) {
-					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-						script {
-							if (params.ecr_action == 'create') {
-								docker_image=docker.build('buggy-app')
-							}
-						}
-					}
-				}
+				docker_build()
 			}
 		}
 		stage('ECR Registry Action') {
@@ -49,13 +34,7 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					retry(count: 3) {
-						if (params.ecr_action == 'create') {
-							docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-								docker_image.push('latest')
-							}
-						}
-					}
+					docker_push()
 				}
 			}
 		}
