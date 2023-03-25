@@ -94,13 +94,13 @@ pipeline {
 	// 			}				
 	// 		}
 	// 	}
-		stage('Wait for Deployment on EKS') {
-			steps {
-				script {
-					static_sleep(60)
-				}
-			}
-		}
+		// stage('Wait for Deployment on EKS') {
+		// 	steps {
+		// 		script {
+		// 			static_sleep(60)
+		// 		}
+		// 	}
+		// }
 	// 	stage('DAST Analysis: OWASP ZAP') {
 	// 		steps {
 	// 			script {
