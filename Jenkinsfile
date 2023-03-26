@@ -19,13 +19,20 @@ pipeline {
 				}
 			}
 		}
+		stage('Wait for Deployment on EKS') {
+			steps {
+				script {
+					static_sleep(60)
+				}
+			}
+		}
 		stage('Docker Build') {
 			steps {
 				retry(count: 3) {
 					withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 						script {
 							if (params.ecr_action == 'create') {
-								docker_image=docker.build('buggyapp')
+								docker_image=docker.build('buggy-app')
 							}
 						}
 					}
@@ -46,8 +53,6 @@ pipeline {
 						if (params.ecr_action == 'create') {
 							docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
 								docker_image.push('latest')
-								// sh 'docker tag buggyapp 636181284446.dkr.ecr.us-east-1.amazonaws.com/buggyapp:latest'
-								// sh 'docker push 636181284446.dkr.ecr.us-east-1.amazonaws.com/buggyapp:latest'
 							}
 						}
 					}
