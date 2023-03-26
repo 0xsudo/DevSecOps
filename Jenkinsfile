@@ -21,7 +21,7 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				docker_build('buggyapp')
+				docker_build("buggyapp")
 			}
 		}
 		stage('ECR Registry Action') {
