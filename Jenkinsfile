@@ -19,13 +19,6 @@ pipeline {
 				}
 			}
 		}
-		stage('Wait for Deployment on EKS') {
-			steps {
-				script {
-					static_sleep(60)
-				}
-			}
-		}
 		stage('Docker Build') {
 			steps {
 				retry(count: 3) {
@@ -37,6 +30,13 @@ pipeline {
 					// 		}
 					// 	}
 					// }
+				}
+			}
+		}
+		stage('Wait for Deployment on EKS') {
+			steps {
+				script {
+					static_sleep(60)
 				}
 			}
 		}
