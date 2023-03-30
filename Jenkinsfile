@@ -1,5 +1,5 @@
 @Library('devsecops-shared-lib') _
-import devops.jnkns.Utils
+import devops.jnkns.ParamParser
 
 pipeline {
 	agent any
@@ -23,15 +23,10 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				docker_build(this, imagename: 'buggy-app')
-				// docker_build(imagename: 'buggy-app')
-					// withDockerRegistry([credentialsId: 'docker-login', url: '']) {
-					// 	script {
-					// 		if (params.ecr_action == 'create') {
-					// 			docker_image=docker.build('buggy-app')
-					// 		}
-					// 	}
-					// }
+				script{
+					docker_build(imagename: 'buggy-app')
+
+				}
 			}
 		}
 		stage('Wait for Deployment on EKS') {
