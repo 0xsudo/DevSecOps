@@ -1,4 +1,5 @@
 @Library('devsecops-shared-lib') _
+
 pipeline {
 	agent any
 	tools {
@@ -21,8 +22,7 @@ pipeline {
 		}
 		stage('Docker Build') {
 			steps {
-				retry(count: 3) {
-					docker_build(imagename: 'buggy-app')
+				docker_build(imagename: 'buggy-app')
 					// withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 					// 	script {
 					// 		if (params.ecr_action == 'create') {
@@ -30,7 +30,6 @@ pipeline {
 					// 		}
 					// 	}
 					// }
-				}
 			}
 		}
 		stage('Wait for Deployment on EKS') {
