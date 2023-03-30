@@ -1,5 +1,4 @@
 @Library('devsecops-shared-lib') _
-// import devops.jnkns.ParamParser
 
 pipeline {
 	agent any
@@ -24,15 +23,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				script{
-					docker_build(imagename: 'buggy-app')
-
-				}
-			}
-		}
-		stage('Wait for Deployment on EKS') {
-			steps {
-				script {
-					static_sleep()
+					docker_build()
 				}
 			}
 		}
@@ -46,21 +37,14 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push(imagename: 'buggy-app', imagetag: 'latest')
-					// retry(count: 3) {
-					// 	if (params.ecr_action == 'create') {
-					// 		docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
-					// 			docker_image.push('latest')
-					// 		}
-					// 	}
-					// }
+					docker_push()
 				}
 			}
 		}
 	// 	stage('SAST Analysis: SonarCloud') {
 	// 		steps {
 	// 			script {
-	// 				sast_sonarcloud(organization: 'buggyapp-devsecops', projectkey: '0xsudo_DevSecOps')
+	// 				sast_sonarcloud()
 	// 			}
 	// 		}
 	// 	}
@@ -74,35 +58,35 @@ pipeline {
 	// 	stage('EKS Cluster Action') {
 	// 		steps {
 	// 			script {
-	// 				eks_action(clustername: 'devsecops-buggy-app', region: 'us-east-1', nodegroupname: 'linux-buggy-app', nodes: 2, instancetype: 't2.micro', tag: 'buggy-app', kubernetesversion: 1.25)
+	// 				eks_action()
 	// 			}
 	// 		}
 	// 	}
 	// 	stage('EKS Cluster Connection') {
 	// 		steps{
 	// 			script {
-	// 				eks_connect(clustername: 'devsecops-buggy-app', region: 'us-east-1')
+	// 				eks_connect()
 	// 			}
 	// 		}
 	// 	}
 	// 	stage('Deployment & Service Action') {
 	// 		steps {
 	// 			script {
-	// 				deploy_action(namespace: 'devsecops')
+	// 				deploy_action()
 	// 			}				
 	// 		}
 	// 	}
 		// stage('Wait for Deployment on EKS') {
 		// 	steps {
 		// 		script {
-		// 			static_sleep(60)
+		// 			static_sleep()
 		// 		}
 		// 	}
 		// }
 	// 	stage('DAST Analysis: OWASP ZAP') {
 	// 		steps {
 	// 			script {
-	// 				dast_owaspzap(zapport: 9090, namespace: 'devsecops', zapreport: '""$BUILD_NUMBER""_DAST_ZAP_buggyapp.html')
+	// 				dast_owaspzap()
 	// 			}
 	// 		}
 	// 	}
