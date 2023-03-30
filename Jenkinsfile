@@ -1,5 +1,5 @@
 @Library('devsecops-shared-lib') _
-import devops.jnkns.ParamParser
+// import devops.jnkns.ParamParser
 
 pipeline {
 	agent any
