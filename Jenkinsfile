@@ -32,7 +32,7 @@ pipeline {
 		stage('Wait for Deployment on EKS') {
 			steps {
 				script {
-					static_sleep(60)
+					static_sleep()
 				}
 			}
 		}
@@ -46,7 +46,7 @@ pipeline {
 		stage('Docker Push') {
 			steps {
 				script {
-					docker_push()
+					docker_push(imagename: 'buggy-app', imagetag: 'latest')
 					// retry(count: 3) {
 					// 	if (params.ecr_action == 'create') {
 					// 		docker.withRegistry('https://636181284446.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:devopsrole') {
