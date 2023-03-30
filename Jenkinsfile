@@ -22,7 +22,7 @@ pipeline {
 		stage('Docker Build') {
 			steps {
 				retry(count: 3) {
-					docker_build("buggy-app")
+					docker_build(imagename: 'buggy-app')
 					// withDockerRegistry([credentialsId: 'docker-login', url: '']) {
 					// 	script {
 					// 		if (params.ecr_action == 'create') {
